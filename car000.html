@@ -1,0 +1,83 @@
+<html>
+<head>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0" />
+  <style type="text/css">
+    .text   {font-size:X-LARGE}
+    .button {font-size:XX-LARGE}
+		TH {background-color: cyan;}
+		.scr {
+			overflow-y: scroll;   /* スクロール表示 */ 
+			width:  1450px;
+			height: 600px;
+			border: 1px double #000000; 
+		}
+  </style>
+
+	<title>和恒会社用車管理(car000)</title>
+</head>
+
+<body>
+	<form name="MAIN" action="/car000/" method="post" style="font-size:X-LARGE">
+  <table border="1">
+		<TR>
+			<TH Width="150px">番号</TH>
+			<TH Width="400px">車両番号</TH>
+			<TH Width="200px">所在</TH>
+			<TH Width="200px">メーカ</TH>
+			<TH Width="300px">車種</TH>
+			<TH Width="200px">車両</TH>
+			<TH Width="300px">年式</TH>
+			<TH Width="300px">経過年数</TH>
+			<TH Width="300px">次回車検</TH>
+			<TH Width="300px">備考</TH>
+		</TR>
+	</table>
+
+	<DIV class="scr">
+	<table border="1">
+		<TR Height="0"> <!-- # 枠幅設定用行なので高さは０ -->
+			<TD Width="150px" style="border-style:none"></TH>
+			<TD Width="400px" style="border-style:none"></TH>
+			<TD Width="200px" style="border-style:none"></TH>
+			<TD Width="200px" style="border-style:none"></TH>
+			<TD Width="300px" style="border-style:none"></TH>
+			<TD Width="200px" style="border-style:none"></TH>
+			<TD Width="300px" style="border-style:none"></TH>
+			<TD Width="300px" style="border-style:none"></TH>
+			<TD Width="300px" style="border-style:none"></TH>
+			<TD Width="300px" style="border-style:none"></TH>
+		</TR>
+	<!--		{{ StrTbl|safe }} -->
+	</table>
+	</DIV>
+
+<BR>
+<BR>
+<BR>
+
+<!--
+<input type="submit" value = "開始" name="BtnKaisi" class="button">
+-->
+<input type="button" class="button" value="新規登録" onclick="location.href='/car100/'">
+　　
+<input type="button" class="button" value="終了" onclick="location.href='/'">
+<BR>
+<BR>
+<BR>
+<input type="button" class="button" value="所在マスタ" onclick="location.href='/car910/'">
+　
+<input type="button" class="button" value="メーカマスタ" onclick="location.href='/car920/'">
+　
+<input type="button" class="button" value="車両区分マスタ" onclick="location.href='/car930/'">
+　
+<input type="button" class="button" value="車種マスタ" onclick="location.href='/car940/'">
+
+<BR>
+
+<p	class="LblMsg">{{ LblMsg }}</p>
+
+
+</form>
+</body>
+
+</html>

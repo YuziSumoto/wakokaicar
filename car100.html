@@ -1,0 +1,123 @@
+<html>
+<head>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0" />
+  <style type="text/css">
+    .text   {font-size:X-LARGE}
+    .button {font-size:XX-LARGE}
+		select  {font-size:X-LARGE;width:200px}
+		TH {background-color: cyan;
+		.scr {
+			overflow-y: scroll;   /* スクロール表示 */ 
+			width:  800px;
+			height: 600px;
+			border: 4px double #000000; 
+		}
+  </style>
+
+	<title>和恒会社用車管理(car100)</title>
+</head>
+
+<body>
+	<form name="MAIN" action="/car100/" method="post" style="font-size:X-LARGE">
+    <table border="1" style="font-size:LARGE">
+			<TR> <!-- # 枠幅設定用行なので高さは０ -->
+				<TD Height="0" Width="200px" style="border-style:none">
+         </TH>
+				<TD Height="0" Width="200px" style="border-style:none">
+			</TR>
+
+			<TR>
+				<TH>番号</TH>
+				<TD>
+					<input type="number" min="1" max="99" value="{{ Rec.SortNo }}" name="SortNo" class="text" />
+				</TD>
+			</TR>
+			<TR>
+				<TH>車両番号</TH>
+				<TD>
+					<input value="{{ Rec.CarNo }}" name="CarNo" class="text" />
+				</TD>
+			</TR>
+			<TR>
+				<TH>所在</TH>
+				<TD>
+					<select name="SyozaiCD">
+						{% for RecSyozai in SnapSyozai %} 
+							<OPTION value="{{ RecSyozai.Code }}"
+								{% if Rec.SyozaiCD == RecSyozai.Code  %} Selected {% endif %}
+							>{{ RecSyozai.Name}}
+						{% endfor %}
+					</select>
+				</TD>
+			</TR>
+			<!--
+			<TR>
+				<TH>メーカ</TH>
+				<TD>
+				</TD>
+			</TR>
+			-->
+			<TR>
+				<TH>車種</TH>
+				<TD>
+					<select name="SyasyuCD">
+						{% for RecSyasyu in SnapSyasyu %} 
+							<OPTION value="{{ RecSyasyu.Code }}"
+								{% if Rec.SyasyuCD == RecSyasyu.Code  %} Selected {% endif %}
+							>{{ RecSyasyu.Name}}
+						{% endfor %}
+					</select>
+				</TD>
+			</TR>
+			<!--
+			<TR>
+				<TH>車両</TH>
+				<TD>
+				</TD>
+			</TR>
+			-->
+			<TR>
+				<TH>年式</TH>
+				<TD>
+					<input value="{{ Rec.Nensiki }}" name="Nensiki" class="text" />
+				</TD>
+			</TR>
+			<TR>
+				<TH>経過年数</TH>
+				<TD class="text">
+					12
+				</TD>
+			</TR>
+			<TR>
+				<TH>次回車検</TH>
+				<TD class="text">
+					H28.10.1
+				</TD>
+			</TR>
+			<TR>
+				<TH>備考</TH>
+				<TD>
+					<input value="{{ Rec.Biko }}" name="Biko" class="text" />
+				</TD>
+			</TR>
+
+
+		</table>
+
+<BR>
+<BR>
+<BR>
+
+<input type="button" class="button" value="中止" onclick="location.href='/'">
+　　
+<input type="submit" value = "登録" name="BtnEnd" class="button">
+
+<BR>
+
+<p	class="LblMsg">{{ LblMsg }}</p>
+
+
+</form>
+</body>
+
+</html>

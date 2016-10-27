@@ -1,0 +1,59 @@
+<html>
+<head>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0" />
+  <style type="text/css">
+    .text   {font-size:X-LARGE}
+    .button {font-size:XX-LARGE}
+		TH {background-color: cyan;
+		.scr {
+			overflow-y: scroll;   /* スクロール表示 */ 
+			width:  800px;
+			height: 600px;
+			border: 4px double #000000; 
+		}
+  </style>
+
+	<title>和恒会社用車管理(car910)</title>
+</head>
+
+<body>
+	<form name="MAIN" action="/car910/" method="post" style="font-size:X-LARGE">
+    <table border="1" style="font-size:LARGE">
+			<TR> <!-- # 枠幅設定用行なので高さは０ -->
+				<TD Height="0" Width="200px" style="border-style:none">
+         </TH>
+				<TD Height="0" Width="200px" style="border-style:none">
+			</TR>
+
+			<TR>
+				<TH>コード</TH>
+				<TD>
+					<input type="number" min="1" max="99" value="{{ Code }}" name="Code" class="text" />
+				</TD>
+			</TR>
+			<TR>
+				<TH>所在</TH>
+				<TD>
+					<input value="{{ Name }}" name="Name" class="text" />
+				</TD>
+			</TR>
+
+		</table>
+
+<BR>
+<BR>
+<BR>
+
+<input type="button" class="button" value="中止" onclick="location.href='/'">
+　　
+<input type="submit" value = "更新" name="BtnEnd" class="button">
+
+<BR>
+
+<p	class="LblMsg">{{ LblMsg }}</p>
+
+
+</form>
+</body>
+
+</html>

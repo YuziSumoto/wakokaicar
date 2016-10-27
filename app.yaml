@@ -1,0 +1,41 @@
+application: wakokaicar
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+
+- url: /css  
+  static_dir: css
+
+# ログイン
+- url: /car000/.*
+  script: car000.app
+# 新車登録
+- url: /car100/.*
+  script: car100.app
+
+# 所在マスタ
+- url: /car910/.*
+  script: car910.app
+
+# メーカマスタ
+- url: /car920/.*
+  script: car920.app
+# 車両区分マスタ
+- url: /car930/.*
+  script: car930.app
+# 車種マスタ
+- url: /car940/.*
+  script: car940.app
+
+- url: .*
+  script: car000.app
+
+libraries:
+- name: webapp2
+  version: "2.5.2"

@@ -15,6 +15,7 @@ class MstSyaryo(db.Model):
     else:
       Recs = Snap.fetch(Snap.count())
     return Recs
+
   def GetRec(self,Code):
     Sql =  "SELECT * FROM MstSyaryo"
     Sql += " Where Code = " + str(Code)

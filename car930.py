@@ -23,8 +23,9 @@ class MainHandler(webapp2.RequestHandler):
 #      self.redirect(users.create_logout_url(self.request.uri))
 #      return
 
-    Snap = MstSyaryo().GetAll()
-    template_values = { 'LblMsg': ""}
+    template_values = { 'LblMsg': ''
+                       ,'SnapSyaryo':MstSyaryo().GetAll() # マスタ内容
+                        }
     path = os.path.join(os.path.dirname(__file__), 'car930.html')
     self.response.out.write(template.render(path, template_values))
 
@@ -38,10 +39,21 @@ class MainHandler(webapp2.RequestHandler):
     Code = self.request.get('Code')
     Name = self.request.get('Name')
 
-    MstSyaryo().Add(Code,Name)
+    if self.request.get('BtnEnd')  != '': # 更新ボタン
+      MstSyaryo().Add(Code,Name)
+      Rec = {} 
 
-    Snap = MstSyaryo().GetAll
-    template_values = { 'LblMsg': ""}
+    for param in self.request.arguments(): 
+      if "BtnSel" in param:  # 明細選択
+        Rec = MstSyaryo().GetRec(self.request.get('BtnSel')) 
+      if "BtnDel" in param:  # 明細削除
+        MstSyaryo().Delete(param.replace("BtnDel",""))
+        Rec = {} 
+
+    template_values = { 'LblMsg': ""
+                       ,'Rec'       :Rec
+                       ,'SnapSyaryo':MstSyaryo().GetAll()
+                        }
     path = os.path.join(os.path.dirname(__file__), 'car930.html')
     self.response.out.write(template.render(path, template_values))
 

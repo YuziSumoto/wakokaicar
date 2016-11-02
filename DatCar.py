@@ -21,15 +21,30 @@ class DatCar(db.Model):
   HaisyaBi        = db.DateTimeProperty(auto_now_add=False) # 廃車日
 
   def GetAll(self):
-
     Sql =  "SELECT * FROM DatCar"
     Sql += " Order By SortNo,CarNo"
-
     Snap = db.GqlQuery(Sql)
-  
     if Snap.count() == 0:
       Recs = {}
     else:
       Recs = Snap.fetch(Snap.count())
+    return Recs
+
+  def Delete(self,SortNo):
+    Sql =  "SELECT * FROM DatCar"
+    Sql += " Where SortNo = " + str(SortNo)
+    Snap = db.GqlQuery(Sql)
+    for Rec in Snap.fetch(Snap.count()):
+      Rec.delete()
+    return
+
+  def GetRec(self,SortNo):
+    Sql =  "SELECT * FROM DatCar"
+    Sql += " Where SortNo = " + str(SortNo)
+    Snap = db.GqlQuery(Sql)
+    if Snap.count() == 0:
+      Recs = {}
+    else:
+      Recs = Snap.fetch(1)[0]
 
     return Recs

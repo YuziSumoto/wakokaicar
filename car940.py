@@ -25,9 +25,11 @@ class MainHandler(webapp2.RequestHandler):
 #      self.redirect(users.create_logout_url(self.request.uri))
 #      return
 
+    SnapSyasyu = MstSyasyu().GetAll()
     SnapMaker  = MstMaker().GetAll()
     SnapSyaryo = MstSyaryo().GetAll()
     template_values = { 'LblMsg': ""
+                       ,'SnapSyasyu': SnapSyasyu
                        ,'SnapMaker' : SnapMaker
                        ,'SnapSyaryo': SnapSyaryo
                       }
@@ -46,12 +48,23 @@ class MainHandler(webapp2.RequestHandler):
     SyaryoCD = self.request.get('SyaryoCD')
     Name     = self.request.get('Name')
 
-    MstSyasyu().Add(Code,MakerCD,SyaryoCD,Name)
+    if self.request.get('BtnEnd')  != '': # 更新ボタン
+      MstSyasyu().Add(Code,MakerCD,SyaryoCD,Name) # 更新
+      Rec = {} 
 
+    for param in self.request.arguments(): 
+      if "BtnSel" in param:  # 明細選択
+        Rec = MstSyasyu().GetRec(self.request.get('BtnSel')) 
+      if "BtnDel" in param:  # 明細削除
+        MstSyasyu().Delete(param.replace("BtnDel",""))
+        Rec = {} 
+
+    SnapSyasyu = MstSyasyu().GetAll()
     SnapMaker  = MstMaker().GetAll()
     SnapSyaryo = MstSyaryo().GetAll()
-    Snap = MstSyaryo().GetAll
     template_values = { 'LblMsg': ""
+                       ,'Rec'       : Rec
+                       ,'SnapSyasyu': SnapSyasyu
                        ,'SnapMaker' : SnapMaker
                        ,'SnapSyaryo': SnapSyaryo
                       }

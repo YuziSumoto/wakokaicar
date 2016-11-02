@@ -7,7 +7,7 @@
 		TH {background-color: cyan;}
 		.scr {
 			overflow-y: scroll;   /* スクロール表示 */ 
-			width:  1450px;
+			width:  1230px;
 			height: 600px;
 			border: 1px double #000000; 
 		}
@@ -17,37 +17,66 @@
 </head>
 
 <body>
-	<form name="MAIN" action="/car000/" method="post" style="font-size:X-LARGE">
-  <table border="1">
-		<TR>
-			<TH Width="150px">番号</TH>
-			<TH Width="400px">車両番号</TH>
-			<TH Width="200px">所在</TH>
-			<TH Width="200px">メーカ</TH>
-			<TH Width="300px">車種</TH>
-			<TH Width="200px">車両</TH>
-			<TH Width="300px">年式</TH>
-			<TH Width="300px">経過年数</TH>
-			<TH Width="300px">次回車検</TH>
-			<TH Width="300px">備考</TH>
-		</TR>
-	</table>
-
+	<form name="MAIN" action="/car000/" method="post" style="font-size:LARGE">
 	<DIV class="scr">
-	<table border="1">
-		<TR Height="0"> <!-- # 枠幅設定用行なので高さは０ -->
-			<TD Width="150px" style="border-style:none"></TH>
-			<TD Width="400px" style="border-style:none"></TH>
-			<TD Width="200px" style="border-style:none"></TH>
-			<TD Width="200px" style="border-style:none"></TH>
-			<TD Width="300px" style="border-style:none"></TH>
-			<TD Width="200px" style="border-style:none"></TH>
-			<TD Width="300px" style="border-style:none"></TH>
-			<TD Width="300px" style="border-style:none"></TH>
-			<TD Width="300px" style="border-style:none"></TH>
-			<TD Width="300px" style="border-style:none"></TH>
+
+	<table border="1" width="1200px">
+		<TR>
+			<TH Width="58px">番号</TH>
+			<TH Width="200px">車両番号</TH>
+			<TH Width="100px">
+				<input type="button" style="Width:96px;font-size:X-LARGE"
+					value="所在" onclick="location.href='/car910/'">
+			</TH>
+			<TH Width="100px">
+				<input type="button" style="Width:96px;font-size:X-LARGE"
+					value="メーカ" onclick="location.href='/car920/'">
+			</TH>
+			<TH Width="200px">
+				<input type="button" style="Width:196px;font-size:X-LARGE"
+					 value="車種" onclick="location.href='/car940/'">
+			</TH>
+			<TH Width="100px">
+				<input type="button"  style="Width:96px;font-size:X-LARGE"
+				 value="車両" onclick="location.href='/car930/'">
+			</TH>
+			<TH Width="120px">年式<BR>
+			経過年数</TH>
+			<TH Width="100px">次回車検</TH>
+			<TH Width="100px">走行距離<BR>
+												確認日</TH>
+			<TH Width="100px">次回オイル<BR>交換</TH>
+			<TH Width="200px">備考</TH>
+			<TH Width="50px">削除</TH>
 		</TR>
-	<!--		{{ StrTbl|safe }} -->
+		{% for Rec in Snap %} 
+			<TR>
+				<TD> <!-- 選択ボタン -->
+					<input style="width:48px" type='submit' value = '{{ Rec.SortNo }}' name='BtnSel' >
+				</TD>
+				<TD>{{ Rec.CarNo}}</TD>
+				<TD>{{ Rec.Syozai}}</TD>
+				<TD>{{ Rec.Maker}}</TD>
+				<TD>{{ Rec.Syasyu}}</TD>
+				<TD>{{ Rec.Syaryo}}</TD>
+				<TD align="center">{{ Rec.WNensiki }}<BR>
+														{{ Rec.Keika}}</TD>
+				<TD>
+					<input style="width:98px{{ Rec.ZikaiColor }}" type='submit' value='{{ Rec.Zikai }}' name='BtnSyaken{{ Rec.SortNo }}' >
+				</TD>
+				<TD>
+					<input style="width:98px" type='submit' value='{{ Rec.Kyori }}' name='BtnKyori{{ Rec.SortNo }}' >
+					<BR>
+					&nbsp;{{ Rec.Kakunin|date:"Y/m/d"}}&nbsp;</TD>
+				<TD>
+					<input style="width:98px;font-size:LARGE;{{ Rec.OilColor }}" type='submit' value='{{ Rec.Oil }}' name='BtnOil{{ Rec.SortNo }}' >
+				</TD>
+				<TD>{{ Rec.Biko}}</TD>
+				<TD> <!-- 削除ボタン -->
+					<input style="width:45px" type='submit' value='削除' name='BtnDel{{ Rec.SortNo }}' >
+				</TD>
+			</TR>
+		{% endfor %}
 	</table>
 	</DIV>
 
@@ -64,13 +93,9 @@
 <BR>
 <BR>
 <BR>
-<input type="button" class="button" value="所在マスタ" onclick="location.href='/car910/'">
 　
-<input type="button" class="button" value="メーカマスタ" onclick="location.href='/car920/'">
 　
-<input type="button" class="button" value="車両区分マスタ" onclick="location.href='/car930/'">
 　
-<input type="button" class="button" value="車種マスタ" onclick="location.href='/car940/'">
 
 <BR>
 

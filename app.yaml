@@ -18,6 +18,15 @@ handlers:
 # 新車登録
 - url: /car100/.*
   script: car100.app
+# 車検登録
+- url: /car200/.*
+  script: car200.app
+# オイル交換登録
+- url: /car210/.*
+  script: car210.app
+# 使用歴登録
+- url: /car220/.*
+  script: car220.app
 
 # 所在マスタ
 - url: /car910/.*

@@ -14,3 +14,35 @@ indexes:
   properties:
   - name: SortNo
   - name: CarNo
+
+- kind: DatOil
+  properties:
+  - name: SortNo
+  - name: Hizuke
+    direction: desc
+
+- kind: DatSyaken
+  properties:
+  - name: SortNo
+  - name: Hizuke
+    direction: desc
+
+- kind: DatUse
+  properties:
+  - name: SortNo
+  - name: Hizuke
+    direction: desc
+  - name: STime
+    direction: desc
+
+- kind: DatUse
+  properties:
+  - name: SortNo
+  - name: Hizuke
+    direction: desc
+
+- kind: DatUse
+  properties:
+  - name: SortNo
+  - name: Kyori
+    direction: desc

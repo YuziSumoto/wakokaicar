@@ -11,6 +11,9 @@ from google.appengine.ext.webapp.util import login_required
 from google.appengine.api import users
 #from MstUser   import *   # 使用者マスタ
 from DatCar     import *   # 所有車データ
+from DatSyaken  import *   # 車検データ
+from DatOil     import *   # オイル交換データ
+from DatUse     import *   # 使用データ
 
 class MainHandler(webapp2.RequestHandler):
 
@@ -23,10 +26,27 @@ class MainHandler(webapp2.RequestHandler):
 #      self.redirect(users.create_logout_url(self.request.uri))
 #      return
 
-    StrTbl = self.GetTable()
+    Snap = DatCar().GetAll()
+    for Rec in Snap:
+      setattr(Rec,"Keika",self.GetKeika(Rec.Nensiki))
+      setattr(Rec,"WNensiki",self.WarekiHenko(Rec.Nensiki))
 
-    template_values = {'LblMsg': "",
-                       'StrTbl': StrTbl}
+      Zikai,FontColor = DatSyaken().GetNext(Rec.SortNo)
+      setattr(Rec,"Zikai",Zikai)
+      setattr(Rec,"ZikaiColor",FontColor)
+      Kakunin,Kyori = DatUse().GetKyori(Rec.SortNo)
+      setattr(Rec,"Kakunin",Kakunin)
+      setattr(Rec,"Kyori","{:,d}".format(Kyori))
+
+      Oil = DatOil().GetNext(Rec.SortNo)
+      if Oil != 0:
+        setattr(Rec,"Oil","{:,d}".format(Oil))
+        if int(Kyori) > (Oil - 1000):
+          setattr(Rec,"OilColor",";background-color:red")
+              
+    template_values = {'LblMsg': ""
+                      ,'Snap': Snap 
+                       }
     path = os.path.join(os.path.dirname(__file__), 'car000.html')
     self.response.out.write(template.render(path, template_values))
 
@@ -37,66 +57,60 @@ class MainHandler(webapp2.RequestHandler):
 #      self.redirect(users.create_logout_url(self.request.uri))
 #      return
 
-#    SyokuinID = self.request.cookies.get('SyokuinID', '0')
-#    if self.request.get('BtnKekka')  != '':
-#      self.redirect("/stres100/?SyokuinID=" + SyokuinID)
-#      return
+    for param in self.request.arguments(): 
+      if "BtnSel" in param:  # 選択ボタン？
+        self.redirect("/car100/?SortNo=" + self.request.get('BtnSel')) # パラメタ付で登録画面
+        return
+      if "BtnSyaken" in param:  # 車検ボタン？
+        self.redirect("/car200/?SortNo=" + param.replace("BtnSyaken","")) # パラメタ付で車検画面
+        return
+      if "BtnOil" in param:  # オイル交換ボタン？
+        self.redirect("/car210/?SortNo=" + param.replace("BtnOil","")) # パラメタ付で車検画面
+        return
+      if "BtnKyori" in param:  # 距離ボタン？
+        self.redirect("/car220/?SortNo=" + param.replace("BtnKyori","")) # パラメタ付で車検画面
+        return
+      if "BtnDel" in param:  # 更新ボタン？
+        DatCar().Delete(param.replace("BtnDel",""))
 
-#    for param in self.request.arguments(): 
-#      if "BtnSel" in param:  # 更新ボタン？
-#        Parm =  "?SyokuinID=" + SyokuinID  # Cookieより
-#        Parm += "&Bango=" + param.replace("BtnSel","")  # Cookieより
-#        self.redirect("/stres020/" + Parm) #
-#        return
+    Snap = DatCar().GetAll()
+    for Rec in Snap:
+      setattr(Rec,"Keika",self.GetKeika(Rec.Nensiki))
+      setattr(Rec,"WNensiki",self.WarekiHenko(Rec.Nensiki))
+      Zikai,FontColor = DatSyaken().GetNext(Rec.SortNo)
+      setattr(Rec,"Zikai",Zikai)
+      setattr(Rec,"ZikaiColor",FontColor)
+      
+      Oil = DatOil().GetNext(Rec.SortNo)
+      if Oil != 0:
+        setattr(Rec,"Oil","{:,d}".format(Oil))
 
-    StrTbl = "" # self.GetTable(SyokuinID)
-    template_values = {'LblMsg': "",
-                       'StrTbl': StrTbl}
+    template_values = {'LblMsg': ""
+                      ,'Snap': Snap
+                      }
     path = os.path.join(os.path.dirname(__file__), 'car000.html')
     self.response.out.write(template.render(path, template_values))
 
-  def GetTable(self):
+  def GetKeika(self,Nensiki):
+    if str(Nensiki) == "":
+      return ""
+    Nensu  = datetime.datetime.now().year  - Nensiki.year
+    Tukisu = datetime.datetime.now().month  - Nensiki.month
+    if Tukisu < 0:
+      Nensu  -=1
+      Tukisu +=12
 
-    StrTbl = ""
+    return str(Nensu) + "." + str(Tukisu)
 
-    Snap = DatCar().GetAll()
-#    DaiBunrui = -1 # 初期化
-#    TyuBunrui = -1 # 初期化
+  def WarekiHenko(self,Nensiki):
+    if str(Nensiki) == "":
+      return ""
+    Nen  = Nensiki.year  - 1988
+    Wareki =  "H" + str(Nen)
+    Wareki +=  "." + str(Nensiki.month)
+    Wareki +=  "." + str(Nensiki.day)
 
-#    UserAgent = os.environ['HTTP_USER_AGENT']
-
-    for Rec in Snap:
-      
-      StrTbl += "<TR><TD colspan ='2'>"  # 項目
-#      StrTbl += "</TD></TR>"
-#      if TyuBunrui != Rec.TyuBunrui:
-#        TyuBunrui = Rec.TyuBunrui
-#        if TyuBunrui >= 1:
-#          StrTbl += "<TR><TD colspan ='2'>"  # 項目
-#          StrTbl += u"　" + WBunrui.GetNaiyo(Rec.DaiBunrui,Rec.TyuBunrui,Rec.SyoBunrui)  # 項目
-#          StrTbl += "</TD></TR>"
-
-#      StrTbl += "<TR><TD>"  # 項目
-#      StrTbl += u"　　" + Rec.Naiyo
-#      StrTbl += "</TD>"
-
-#      if UserAgent.find('iPhone') >= 0: # iPhone?
-#        StrTbl += "</TR><TR>"  # 項目
-#      if UserAgent.find('Android') >= 0: # Android?
-#        StrTbl += "</TR><TR>"  # 項目
-        
-#      StrTbl += "<TD>"    # 削除ボタン
-#      StrTbl += u"<input type='submit' value = '"
-#      RecKotae = WKotae.GetRec(int(SyokuinID),Rec.Bango)
-#      if  RecKotae == False:
-#        StrTbl += u"未回答"
-#      else:
-#        StrTbl += RecKotae.Naiyo
-#      StrTbl += "' name='BtnSel"
-#      StrTbl += str(Rec.Bango)
-#      StrTbl += "'  style='font-size:LARGE'>"
-      StrTbl += "</TD></TR>"
-    return  StrTbl 
+    return Wareki
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),

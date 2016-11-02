@@ -26,15 +26,17 @@ class MainHandler(webapp2.RequestHandler):
 #    if MstUser().ChkUser(user.email()) == False:
 #      self.redirect(users.create_logout_url(self.request.uri))
 #      return
+    SortNo = self.request.get('SortNo')
+    if SortNo == "":
+      Rec = {}
+    else:
+      Rec = DatCar().GetRec(SortNo)
+      setattr(Rec,"Keika",self.GetKeika(Rec.Nensiki))
 
-    Rec = {}
-    SnapSyozai = MstSyozai().GetAll() # コンボボックス用
-    SnapSyasyu = MstSyasyu().GetAll() # コンボボックス用
-    # 更新モードなら現データセット
     template_values = { 'LblMsg': ""
                        ,'Rec': Rec
-                       ,'SnapSyozai': SnapSyozai
-                       ,'SnapSyasyu': SnapSyasyu
+                       ,'SnapSyozai': MstSyozai().GetAll() # コンボボックス用
+                       ,'SnapSyasyu': MstSyasyu().GetAll() # コンボボックス用
                       }
     path = os.path.join(os.path.dirname(__file__), 'car100.html')
     self.response.out.write(template.render(path, template_values))
@@ -46,28 +48,32 @@ class MainHandler(webapp2.RequestHandler):
 #      self.redirect(users.create_logout_url(self.request.uri))
 #      return
     self.AddRec() # レコード更新
+    self.redirect("/")
+    return
+  
     Rec = {}
     # 更新モードなら現データセット
 
-    SnapSyozai = MstSyozai().GetAll() # コンボボックス用
-    SnapSyasyu = MstSyasyu().GetAll() # コンボボックス用
-
     template_values = { 'LblMsg': ""
                        ,'Rec': Rec
-                       ,'SnapSyozai': SnapSyozai
-                       ,'SnapSyasyu': SnapSyasyu
+                       ,'SnapSyozai': MstSyozai().GetAll() # コンボボックス用
+                       ,'SnapSyasyu': MstSyasyu().GetAll() # コンボボックス用
                       }
     path = os.path.join(os.path.dirname(__file__), 'car100.html')
     self.response.out.write(template.render(path, template_values))
 
   def AddRec(self):
-
+    DatCar().Delete(self.request.get('SortNo'))
     NewRec = DatCar()
     NewRec.SortNo   = int(self.request.get('SortNo'))
     NewRec.CarNo    = self.request.get('CarNo')
+
     NewRec.SyozaiCD = int(self.request.get('SyozaiCD'))
+    NewRec.Syozai   = MstSyozai().GetRec(self.request.get('SyozaiCD')).Name
+    
     NewRec.SyasyuCD = int(self.request.get('SyasyuCD'))
     RecSyasyu = MstSyasyu().GetRec(NewRec.SyasyuCD)
+    NewRec.Syasyu   = RecSyasyu.Name
 
     NewRec.MakerCD  = RecSyasyu.MakerCD
     NewRec.Maker    = MstMaker().GetRec(NewRec.MakerCD).Name
@@ -75,11 +81,22 @@ class MainHandler(webapp2.RequestHandler):
     NewRec.SyaryoCD = RecSyasyu.SyaryoCD
     NewRec.Syaryo   = MstSyaryo().GetRec(NewRec.SyaryoCD).Name
 
-    NewRec.Nensiki  = self.request.get('Nensiki')
+    NewRec.Nensiki  = datetime.datetime.strptime(self.request.get('Nensiki'), '%Y/%m/%d')
     NewRec.Biko     = self.request.get('Biko')
     NewRec.YukoFlg  = True
     NewRec.put()
     return
+
+  def GetKeika(self,Nensiki):
+    if str(Nensiki) == "":
+      return ""
+    Nensu  = datetime.datetime.now().year  - Nensiki.year
+    Tukisu = datetime.datetime.now().month  - Nensiki.month
+    if Tukisu < 0:
+      Nensu  -=1
+      Tukisu +=12
+
+    return str(Nensu) + "." + str(Tukisu)
   
 app = webapp2.WSGIApplication([
     ('/car100/', MainHandler)

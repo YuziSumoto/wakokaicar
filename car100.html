@@ -64,7 +64,7 @@
 						{% for RecSyasyu in SnapSyasyu %} 
 							<OPTION value="{{ RecSyasyu.Code }}"
 								{% if Rec.SyasyuCD == RecSyasyu.Code  %} Selected {% endif %}
-							>{{ RecSyasyu.Name}}
+							>{{ RecSyasyu.Name }}
 						{% endfor %}
 					</select>
 				</TD>
@@ -79,19 +79,19 @@
 			<TR>
 				<TH>年式</TH>
 				<TD>
-					<input value="{{ Rec.Nensiki }}" name="Nensiki" class="text" />
+					<input value="{{ Rec.Nensiki|date:'Y/m/d' }}" name="Nensiki" class="text" />
 				</TD>
 			</TR>
 			<TR>
 				<TH>経過年数</TH>
 				<TD class="text">
-					12
+					{{ Rec.Keika }}
 				</TD>
 			</TR>
 			<TR>
 				<TH>次回車検</TH>
 				<TD class="text">
-					H28.10.1
+					{{ Rec.Zikai }}
 				</TD>
 			</TR>
 			<TR>
@@ -103,7 +103,6 @@
 
 
 		</table>
-
 <BR>
 <BR>
 <BR>

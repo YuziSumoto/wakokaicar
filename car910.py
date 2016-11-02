@@ -23,8 +23,9 @@ class MainHandler(webapp2.RequestHandler):
 #      self.redirect(users.create_logout_url(self.request.uri))
 #      return
 
-    SnapSyozai = MstSyozai().GetAll()
-    template_values = { 'LblMsg': ""}
+    template_values = { 'LblMsg': ""
+                       ,'SnapSyozai':MstSyozai().GetAll()
+                      }
     path = os.path.join(os.path.dirname(__file__), 'car910.html')
     self.response.out.write(template.render(path, template_values))
 
@@ -38,10 +39,21 @@ class MainHandler(webapp2.RequestHandler):
     Code = self.request.get('Code')
     Name = self.request.get('Name')
 
-    MstSyozai().Add(Code,Name)
+    if self.request.get('BtnEnd')  != '': # 更新ボタン
+      MstSyozai().Add(Code,Name)
+      Rec = {} 
 
-    SnapSyozai = MstSyozai().GetAll
-    template_values = { 'LblMsg': ""}
+    for param in self.request.arguments(): 
+      if "BtnSel" in param:  # 明細選択
+        Rec = MstSyozai().GetRec(self.request.get('BtnSel')) 
+      if "BtnDel" in param:  # 明細削除
+        MstSyozai().Delete(param.replace("BtnDel",""))
+        Rec = {} 
+
+    template_values = { 'LblMsg': ""
+                       ,'Rec'      :Rec
+                       ,'SnapSyozai':MstSyozai().GetAll()
+                        }
     path = os.path.join(os.path.dirname(__file__), 'car910.html')
     self.response.out.write(template.render(path, template_values))
 
